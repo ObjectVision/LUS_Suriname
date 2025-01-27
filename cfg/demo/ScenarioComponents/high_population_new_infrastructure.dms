@@ -16,9 +16,9 @@ container high_population_new_infrastructure
 {
 
 	//LANDBOUW ZWERF
-	container landbouw_zwerf
+	container agricultural_scattered
 	{
-		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/landbouw_zwerf/total";
+		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/agricultural_scattered/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(25,dollar_ha) "
@@ -31,10 +31,10 @@ container high_population_new_infrastructure
 
 		attribute<dollar_ha> total (Geography/Suriname250mGrid): expr = "total_high_population + proposed_road + proposed_dam";
 	}
-	// BEBOUWD
-	container bebouwd
+	// builtup
+	container builtup
 	{
-		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid): expr = "high_population/bebouwd/total";
+		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid): expr = "high_population/builtup/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(10,dollar_ha) " 
@@ -48,9 +48,9 @@ container high_population_new_infrastructure
 		attribute<dollar_ha> total (Geography/Suriname250mGrid): expr = "total_high_population + proposed_road + proposed_dam";
 	}
 	// LANDBOUW GROOTSCHALIG
-	container landbouw_grootschalig
+	container agricultural_large_scale
 	{
-		attribute<dollar_ha> total_high_population(Geography/Suriname250mGrid) : expr = "high_population/landbouw_grootschalig/total";
+		attribute<dollar_ha> total_high_population(Geography/Suriname250mGrid) : expr = "high_population/agricultural_large_scale/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(50,dollar_ha) "
@@ -65,9 +65,9 @@ container high_population_new_infrastructure
 	}
 
 	// LANDBOUW KLEINSCHALIG
-	container landbouw_kleinschalig
+	container agricultural_small_scale
 	{
-		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/landbouw_kleinschalig/total";
+		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/agricultural_small_scale/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(50,dollar_ha) "
@@ -82,9 +82,9 @@ container high_population_new_infrastructure
 	}
 
 	//LANDBOUW NAT
-	container landbouw_nat
+	container agricultural_wet
 	{
-		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/landbouw_nat/total";
+		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/agricultural_wet/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr =
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(25,dollar_ha) "
@@ -98,10 +98,10 @@ container high_population_new_infrastructure
 		attribute<dollar_ha> total (Geography/Suriname250mGrid): expr = "total_high_population + proposed_road + proposed_dam";
 	}
 
-	//BOS
-	container bos
+	//forest
+	container forest
 	{
-		attribute<dollar_ha> total_high_population(Geography/Suriname250mGrid) : expr = "high_population/bos/total";
+		attribute<dollar_ha> total_high_population(Geography/Suriname250mGrid) : expr = "high_population/forest/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(25,dollar_ha) "
@@ -116,10 +116,10 @@ container high_population_new_infrastructure
 
 	}
 
-	//MOERA SAVANNE BOS
-	container moeras_savanne_bos
+	//MOERA SAVANNE forest
+	container swamp_savanna_forest
 	{
-		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/moeras_savanne_bos/total";
+		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid) : expr = "high_population/swamp_savanna_forest/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(25,dollar_ha) " 
@@ -134,9 +134,9 @@ container high_population_new_infrastructure
 
 	}
 	// OPEN GEBIED
-	container open_gebied
+	container open_area
 	{
-		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid): expr = "high_population/open_gebied/total";
+		attribute<dollar_ha> total_high_population (Geography/Suriname250mGrid): expr = "high_population/open_area/total";
 
 		attribute<dollar_ha> proposed_road(Geography/Suriname250mGrid) : expr = 
 			"   float32(0.0) * (Present/accessibility/Road_proposed[dollar_ha] < value(50,dollar_ha) " 

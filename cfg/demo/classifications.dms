@@ -10,6 +10,178 @@
 
 container Classifications: Using = "Units"
 {
+	container LU
+	{
+		unit<uint8> AgrLanduseCode: nrofrows = 13
+		{
+			attribute<string> Label: DialogType = "LabelText",
+			[
+				'Overig',
+				'Overig',
+				'Landbouw/ Veeteeltbedrijven',
+				'Gemechaniseerde rijstcultuur',
+				'Oud gemechaniseerde rijstcultuur',
+				'Woongebied',
+				'Aquacultuur',
+				'Bevolkingslandbouw',
+				'Grasland',
+				'Zelfvoorzienende (marginaal) agrarische bedrijven',
+				'Tuinbedrijven',
+				'Ondernemingslandbouw (bananen)',
+				'Zwerflandbouw'
+			];
+			attribute<string> Name: DialogType = "LabelText",
+			[
+				'Overig',
+				'Overig',
+				'Landbouw_Veeteeltbedrijven',
+				'Gemechaniseerde_rijstcultuur',
+				'Oud_gemechaniseerde_rijstcultuur',
+				'Woongebied',
+				'Aquacultuur',
+				'Bevolkingslandbouw',
+				'Grasland',
+				'Zelfvoorzienende_marginaal_agrarische_bedrijven',
+				'Tuinbedrijven',
+				'Ondernemingslandbouw_bananen',
+				'Zwerflandbouw'
+			];
+
+			attribute<UInt32>  code_source: [0,0,55,2,189,255,249,246,56,8,253,251,62];
+
+			attribute<UInt32> Color: DialogType = "BrushColor",
+			[
+				rgb(200,200,200),rgb(200,200,200),rgb(  0,100,  0),rgb(255,128,153),rgb(255,128,  0),rgb(255,  0,  0),
+				rgb(  0,  0,255),rgb(153, 51,  0),rgb(  0,255,  0),rgb(155,204,  0),rgb(255,155,155),rgb(255,255,  0),
+				rgb(204,255,204)
+			];
+			attribute<luModel> luModelnr:
+			[
+				0,0,4,5,5,2,
+				5,4,4,4,3,3,
+				1
+			];
+		}
+		unit<uint8> VegLanduseCode: nrofrows = 16
+		{
+			parameter<uint32> nrAttr: expr = "6", isHidden = "True";
+			unit<UInt32> elements: expr = "Range(uint32, 0, nrAttr*#VegLanduseCode)", isHidden = "True"
+			{
+				attribute<String> Text: [ // @USERINPUT
+				//code_source, Label                                                      ,   R,    G,    B,  luModelnr
+					   '0','NoData'                                                       ,'255','255','255','0'
+					,  '6','Shifting_cultivation'                                         ,  '0','128','128','1'
+					,  '8','Mangrove / creek forest'                                      ,'192','220','192','6'
+					,  '9','Open To closed palm marsh forest'                             ,'165','202','240','7'
+					, '15','Tree_plantation'                                              ,'224', '32',  '0','3'
+					, '55','Beach and littoral woodland'                                  ,'224','192',  '0','6'
+					, '62','Predominantly mesophytic high dryland forest'                 ,'192','224',  '0','6'
+					,'109','Savanna forest'                                               ,'160','160', '64','8'
+					,'164','High swamp forest'                                            ,'128','128','128','7'
+					,'190','Low to medium tall mesophytic forest, mainly on ferrote caps' ,'192','224','128','6'
+					,'233','Marsh forest / low, open scrub and liana forest'              , '32','160','192','7'
+					,'239','forest'                                                          , '40', '60',  '0','6'
+					,'240','landbouw kleinschalig',                                       '   0','255',  '0','4'
+					,'246','Mixed marsh forest and mesophytic high dryland forest'        ,'255','251','240','7'
+					,'247','Low swamp forest'                                             ,'160','160','164','7'
+					,'251','Grass-, fern- and peat swamp'                                 ,'255','255',  '0','7'
+				];
+			}
+
+			attribute<UInt32>  code_source: expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 0, elements)])";
+			attribute<String>  label:       expr = "        Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 1, elements)]", DialogType = "LabelText";
+			attribute<UInt32>  r:           expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 2, elements)])";
+			attribute<UInt32>  g:           expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 3, elements)])";
+			attribute<UInt32>  b:           expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 4, elements)])";
+			attribute<UInt32>  Color:       expr = "rgb(R,G,B)", DialogType = "BrushColor";
+			attribute<luModel> luModelnr:   expr = "  value(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 5, elements)],luModel)";
+		}
+		unit<uint8> luModel: nrofrows = 11, KeepData = "True"
+		{
+			parameter<uint32> nrAttr := 13, isHidden = "True";
+			unit<UInt32> elements: expr = "Range(uint32, 0, nrAttr*#.)", isHidden = "True"
+			{
+				attribute<String> Text: [ // @USERINPUT
+				// label                          , name                          ,     r,    g,    b, rgrey, ggrey, bgrey, travelcostorg, travelcost, traveltime,IsEndogenous, HoofdKlasse
+				  'other'                         ,'overig'                       , '255','255','255', '255', '255', '255',       '99999',     '2',      '180',     'False',    '0'
+				 ,'agricultural scattered'        ,'agricultural_scattered'               , '204','255','204', '200', '200', '200',           '5',     '1',      '180',     'True',     '2'
+				 ,'builtup'                       ,'builtup'                      , '200',  '0',  '0', '100', '100', '100',           '1',     '0.05',    '45',     'True',     '1'
+				 ,'agricultural large-scale'      ,'agricultural_large_scale'        ,   '0','128',  '0', '200', '200', '200',          '10',     '0.05',   '200',     'True',     '2'
+				 ,'agricultural small-scale'      ,'agricultural_small_scale'        ,   '0','255',  '0', '200', '200', '200',          '20',     '0.05',   '240',     'True',     '2'
+				 ,'agricultural wet'              ,'agricultural_wet'                 , '168','168','255', '200', '200', '200',          '20',     '0.05',   '240',     'True',     '2'
+				 ,'forest'                        ,'forest'                          ,  '40', '60',  '0', '140', '140', '140',          '40',     '2',      '260',     'True',     '3'
+				 ,'swamp & savanna forest'        ,'swamp_savanna_forest'           , '192','224','128', '140', '140', '140',         '100',     '2',      '300',     'True',     '3'
+				 ,'open area'                     ,'open_area'                  , '255','255','128', '255', '255', '255',           '4',     '0.4',    '180',     'True',     '4'
+				 ,'water'                         ,'water'                        ,   '0',  '0','255', '255', '255', '255',          '40',     '0.2',    '240',     'False',    '5'
+				 ,'foreign'                       ,'buitenland'                   , '230','230','230', '255', '255', '255',       '99990',     '2',      '220',     'False',    '6'
+				];
+			}
+
+			attribute<string>       Label          :=        Elements/Text[value(uint32(id(luModel)) * nrAttr + 0, elements)], DialogType = "LabelText";
+			// attribute<string>       Name           :=        Elements/Text[value(uint32(id(luModel)) * nrAttr + 1, elements)];
+			attribute<string>       Name           := AsItemName(Label);
+			attribute<UInt32>       r              := uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 2, elements)]);
+			attribute<UInt32>       g              := uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 3, elements)]);
+			attribute<UInt32>       b              := uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 4, elements)]);
+			attribute<UInt32>       rgrey          := uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 5, elements)]);
+			attribute<UInt32>       ggrey          := uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 6, elements)]);
+			attribute<UInt32>       bgrey          := uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 7, elements)]);
+			attribute<UInt32>       BrushColor     := rgb(r,g,b);
+			attribute<UInt32>       ColorGrey      := rgb(rgrey,ggrey,bgrey), DialogType = "BrushColor";
+			attribute<dollar>       TravelCostOrg  :=  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 8, elements)], dollar);
+			attribute<impedance>    TravelCost     :=  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 9, elements)], impedance);
+			attribute<s>            TravelTime     :=  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 10, elements)], s);
+			attribute<bool>         IsEndogenous   :=   bool(Elements/Text[value(uint32(id(luModel)) * nrAttr + 11, elements)]);
+			attribute<Hoofdklassen> Hoofdklassennr :=  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 12, elements)],Hoofdklassen);
+
+			attribute<.>       nr:             = id(.);
+			attribute<string>  id_str:         = String(nr);
+			
+			container V := for_each_nedv(name, String(ID(.))+'[..]', void, .);
+		}
+		unit<uint8> HoofdKlassen: nrofrows = 7
+		{
+			parameter<uint32> nrAttr: expr = "5", isHidden = "True";
+			unit<UInt32> elements: expr = "Range(uint32, 0, nrAttr*#HoofdKlassen)", isHidden = "True"
+			{
+				attribute<String> Text: [ // @USERINPUT
+				// label        , name         ,     r,    g,    b
+				  'overig'      ,'overig'      , '255','255','255'
+				 ,'builtup'     ,'builtup'     , '200',  '0',  '0'
+				 ,'landbouw'    ,'landbouw'    ,   '0','255',  '0'
+				 ,'forest'         ,'forest'         ,  '40', '60',  '0'
+				 ,'open gebied' ,'open_area' , '255','255','128'
+				 ,'water'       ,'water'       ,   '0',  '0','255'
+				 ,'buitenland'  ,'buitenland'  , '230','230','230'
+				];
+			}
+
+			attribute<string>  Label: expr = "        Elements/Text[value(uint32(id(.)) * nrAttr + 0, elements)]", DialogType = "LabelText";
+			attribute<string>  Name:  expr = "        Elements/Text[value(uint32(id(.)) * nrAttr + 1, elements)]";
+			attribute<UInt32>  r:     expr = " uint32(Elements/Text[value(uint32(id(.)) * nrAttr + 2, elements)])";
+			attribute<UInt32>  g:     expr = " uint32(Elements/Text[value(uint32(id(.)) * nrAttr + 3, elements)])";
+			attribute<UInt32>  b:     expr = " uint32(Elements/Text[value(uint32(id(.)) * nrAttr + 4, elements)])";
+			attribute<UInt32>  Color: expr = "rgb(r,g,b)"            , DialogType = "BrushColor";
+		}
+		unit<uint8> luEndogenous: expr = "select_with_org_rel(luModel/IsEndogenous)"
+		{
+			attribute<string> Name:   expr = "luModel/Name[org_rel]";
+			attribute<string> Label:  expr = "Name",                        DialogType = "LabelText";
+			attribute<uint32> Color:  expr = "luModel/Color[org_rel]", DialogType = "BrushColor";
+			// attribute<.>      nr:     expr = "id(.)";
+			// attribute<string> id_str: expr = "String(nr)";
+		}
+		unit<uint8> luExogenous: expr = "Subset(!luModel/IsEndogenous)"
+		{
+			attribute<string> Name:   expr = "luModel/Name[nr_OrgEntity]";
+			attribute<string> Label:  expr = "Name",                        DialogType = "LabelText";
+			attribute<uint32> Color:  expr = "luModel/Color[nr_OrgEntity]", DialogType = "BrushColor";
+			attribute<.>      nr:     expr = "id(.)";
+			attribute<string> id_str: expr = "String(nr)";
+		}
+	}
+
+
 	unit<uint8> m_elevation: nrofrows = 10
 	{
 		attribute<m> ClassBreaks: DialogType = "Classification",
@@ -198,26 +370,26 @@ container Classifications: Using = "Units"
 		container orgLU
 		{
 			//                                                   ACh   ,ARa   ,FRh   ,FRx   ,GLu   ,HSf   ,LPd   ,PTa   ,WR
-			attribute<ratio> landbouw_zwerf        (soiltypes): [0.202 ,0.067 ,0.396 ,0.253 ,0.025 ,0.015 ,0     ,0.041 ,0.003];
-			attribute<ratio> bebouwd               (soiltypes): [0.006 ,0     ,0.013 ,0     ,0.962 ,0     ,0     ,0.019 ,0    ];
-			attribute<ratio> landbouw_grootschalig (soiltypes): [0     ,0.609 ,0     ,0     ,0.217 ,0     ,0     ,0.174 ,0    ];
-			attribute<ratio> landbouw_kleinschalig (soiltypes): [0     ,0     ,0     ,0     ,0.969 ,0     ,0     ,0.031 ,0    ];
-			attribute<ratio> landbouw_nat          (soiltypes): [0     ,0     ,0     ,0     ,1     ,0     ,0     ,0     ,0    ];
-			attribute<ratio> bos                   (soiltypes): [0.235 ,0.043 ,0.343 ,0.331 ,0.01  ,0.003 ,0.011 ,0.021 ,0.003];
-			attribute<ratio> moeras_savanne_bos    (soiltypes): [0.057 ,0.008 ,0.421 ,0.076 ,0.210 ,0.139 ,0.024 ,0.063 ,0    ];
-			attribute<ratio> open_gebied           (soiltypes): [0.158 ,0.126 ,0.485 ,0.003 ,0.024 ,0.034 ,0     ,0.171 ,0    ];
+			attribute<ratio> agricultural_scattered        (soiltypes): [0.202 ,0.067 ,0.396 ,0.253 ,0.025 ,0.015 ,0     ,0.041 ,0.003];
+			attribute<ratio> builtup               (soiltypes): [0.006 ,0     ,0.013 ,0     ,0.962 ,0     ,0     ,0.019 ,0    ];
+			attribute<ratio> agricultural_large_scale (soiltypes): [0     ,0.609 ,0     ,0     ,0.217 ,0     ,0     ,0.174 ,0    ];
+			attribute<ratio> agricultural_small_scale (soiltypes): [0     ,0     ,0     ,0     ,0.969 ,0     ,0     ,0.031 ,0    ];
+			attribute<ratio> agricultural_wet          (soiltypes): [0     ,0     ,0     ,0     ,1     ,0     ,0     ,0     ,0    ];
+			attribute<ratio> forest                   (soiltypes): [0.235 ,0.043 ,0.343 ,0.331 ,0.01  ,0.003 ,0.011 ,0.021 ,0.003];
+			attribute<ratio> swamp_savanna_forest    (soiltypes): [0.057 ,0.008 ,0.421 ,0.076 ,0.210 ,0.139 ,0.024 ,0.063 ,0    ];
+			attribute<ratio> open_area           (soiltypes): [0.158 ,0.126 ,0.485 ,0.003 ,0.024 ,0.034 ,0     ,0.171 ,0    ];
 		}
 		container theory
 		{
 			//                                                   ACh   ,ARa   ,FRh   ,FRx   ,GLu   ,HSf   ,LPd   ,PTa   ,WR
-			attribute<ratio> landbouw_zwerf        (soiltypes): [1     ,0.5   ,0.5   ,0.5   ,-1  ,-1      ,-0.5  ,-1    ,0    ];
-			attribute<ratio> bebouwd               (soiltypes): [0     ,0     ,0     ,0     ,0     ,0     ,0     ,0     ,0    ];
-			attribute<ratio> landbouw_grootschalig (soiltypes): [-1    ,-1    ,-0.5  ,-0.5  ,0.5   ,-1    ,-0.5  ,-1    ,0    ];
-			attribute<ratio> landbouw_kleinschalig (soiltypes): [0     ,-0.5  ,0     ,0     ,0.5   ,-1    ,0     ,0     ,0    ];
-			attribute<ratio> landbouw_nat          (soiltypes): [-1    ,-1    ,-1    ,-1    ,1     ,-0.5  ,-1    ,-0.5  ,0    ];
-			attribute<ratio> bos                   (soiltypes): [0     ,0.4   ,0.4   ,0.4   ,0     ,0     ,0.4   ,0     ,0    ];
-			attribute<ratio> moeras_savanne_bos    (soiltypes): [0     ,0     ,0     ,0     ,0     ,0     ,0     ,0     ,0    ];
-			attribute<ratio> open_gebied           (soiltypes): [0     ,0     ,0     ,0     ,0     ,0     ,0     ,0     ,0    ];
+			attribute<ratio> agricultural_scattered        (soiltypes): [1     ,0.5   ,0.5   ,0.5   ,-1  ,-1      ,-0.5  ,-1    ,0    ];
+			attribute<ratio> builtup               (soiltypes): [0     ,0     ,0     ,0     ,0     ,0     ,0     ,0     ,0    ];
+			attribute<ratio> agricultural_large_scale (soiltypes): [-1    ,-1    ,-0.5  ,-0.5  ,0.5   ,-1    ,-0.5  ,-1    ,0    ];
+			attribute<ratio> agricultural_small_scale (soiltypes): [0     ,-0.5  ,0     ,0     ,0.5   ,-1    ,0     ,0     ,0    ];
+			attribute<ratio> agricultural_wet          (soiltypes): [-1    ,-1    ,-1    ,-1    ,1     ,-0.5  ,-1    ,-0.5  ,0    ];
+			attribute<ratio> forest                   (soiltypes): [0     ,0.4   ,0.4   ,0.4   ,0     ,0     ,0.4   ,0     ,0    ];
+			attribute<ratio> swamp_savanna_forest    (soiltypes): [0     ,0     ,0     ,0     ,0     ,0     ,0     ,0     ,0    ];
+			attribute<ratio> open_area           (soiltypes): [0     ,0     ,0     ,0     ,0     ,0     ,0     ,0     ,0    ];
 		}
 		
 		container total :=
@@ -230,186 +402,6 @@ container Classifications: Using = "Units"
 		
 		attribute<uint32> BrushColor : DialogType = "BrushColor", [rgb(254,172,0),rgb(248,180,130),rgb(218,9,5),rgb(218,198,0),rgb(1,129,252),rgb(155,156,219),rgb(210,210,211),rgb(147,174,46),rgb(  0,  0,255)];
 		attribute<uint32> PenColor:expr = "BrushColor", DialogType = "PenColor";
-	}
-	container LU
-	{
-		unit<uint8> AgrLanduseCode: nrofrows = 13
-		{
-			attribute<string> Label: DialogType = "LabelText",
-			[
-				'Overig',
-				'Overig',
-				'Landbouw/ Veeteeltbedrijven',
-				'Gemechaniseerde rijstcultuur',
-				'Oud gemechaniseerde rijstcultuur',
-				'Woongebied',
-				'Aquacultuur',
-				'Bevolkingslandbouw',
-				'Grasland',
-				'Zelfvoorzienende (marginaal) agrarische bedrijven',
-				'Tuinbedrijven',
-				'Ondernemingslandbouw (bananen)',
-				'Zwerflandbouw'
-			];
-			attribute<string> Name: DialogType = "LabelText",
-			[
-				'Overig',
-				'Overig',
-				'Landbouw_Veeteeltbedrijven',
-				'Gemechaniseerde_rijstcultuur',
-				'Oud_gemechaniseerde_rijstcultuur',
-				'Woongebied',
-				'Aquacultuur',
-				'Bevolkingslandbouw',
-				'Grasland',
-				'Zelfvoorzienende_marginaal_agrarische_bedrijven',
-				'Tuinbedrijven',
-				'Ondernemingslandbouw_bananen',
-				'Zwerflandbouw'
-			];
-
-			attribute<UInt32>  code_source: [0,0,55,2,189,255,249,246,56,8,253,251,62];
-
-			attribute<UInt32> Color: DialogType = "BrushColor",
-			[
-				rgb(200,200,200),rgb(200,200,200),rgb(  0,100,  0),rgb(255,128,153),rgb(255,128,  0),rgb(255,  0,  0),
-				rgb(  0,  0,255),rgb(153, 51,  0),rgb(  0,255,  0),rgb(155,204,  0),rgb(255,155,155),rgb(255,255,  0),
-				rgb(204,255,204)
-			];
-			attribute<luModel> luModelnr:
-			[
-				0,0,4,5,5,2,
-				5,4,4,4,3,3,
-				1
-			];
-		}
-		unit<uint8> VegLanduseCode: nrofrows = 16
-		{
-			parameter<uint32> nrAttr: expr = "6", isHidden = "True";
-			unit<UInt32> elements: expr = "Range(uint32, 0, nrAttr*#VegLanduseCode)", isHidden = "True"
-			{
-				attribute<String> Text: [ // @USERINPUT
-				//code_source, Label                                                      ,   R,    G,    B,  luModelnr
-					   '0','NoData'                                                       ,'255','255','255','0'
-					,  '6','Shifting_cultivation'                                         ,  '0','128','128','1'
-					,  '8','Mangrove / creek forest'                                      ,'192','220','192','6'
-					,  '9','Open To closed palm marsh forest'                             ,'165','202','240','7'
-					, '15','Tree_plantation'                                              ,'224', '32',  '0','3'
-					, '55','Beach and littoral woodland'                                  ,'224','192',  '0','6'
-					, '62','Predominantly mesophytic high dryland forest'                 ,'192','224',  '0','6'
-					,'109','Savanna forest'                                               ,'160','160', '64','8'
-					,'164','High swamp forest'                                            ,'128','128','128','7'
-					,'190','Low to medium tall mesophytic forest, mainly on ferrote caps' ,'192','224','128','6'
-					,'233','Marsh forest / low, open scrub and liana forest'              , '32','160','192','7'
-					,'239','bos'                                                          , '40', '60',  '0','6'
-					,'240','landbouw kleinschalig',                                       '   0','255',  '0','4'
-					,'246','Mixed marsh forest and mesophytic high dryland forest'        ,'255','251','240','7'
-					,'247','Low swamp forest'                                             ,'160','160','164','7'
-					,'251','Grass-, fern- and peat swamp'                                 ,'255','255',  '0','7'
-				];
-			}
-
-			attribute<UInt32>  code_source: expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 0, elements)])";
-			attribute<String>  label:       expr = "        Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 1, elements)]", DialogType = "LabelText";
-			attribute<UInt32>  r:           expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 2, elements)])";
-			attribute<UInt32>  g:           expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 3, elements)])";
-			attribute<UInt32>  b:           expr = " uint32(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 4, elements)])";
-			attribute<UInt32>  Color:       expr = "rgb(R,G,B)", DialogType = "BrushColor";
-			attribute<luModel> luModelnr:   expr = "  value(Elements/Text[value(uint32(id(VegLanduseCode)) * nrAttr + 5, elements)],luModel)";
-		}
-		unit<uint8> luModel: nrofrows = 11, KeepData = "True"
-		{
-			parameter<uint32> nrAttr: expr = "13", isHidden = "True";
-			unit<UInt32> elements: expr = "Range(uint32, 0, nrAttr*#VegLanduseCode)", isHidden = "True"
-			{
-				attribute<String> Text: [ // @USERINPUT
-				// label                          , name                          ,     r,    g,    b, rgrey, ggrey, bgrey, travelcostorg, travelcost, traveltime,IsEndogenous, HoofdKlasse
-				  'overig'                        ,'overig'                       , '255','255','255', '255', '255', '255',       '99999',     '2',      '180',     'False',    '0'
-				 ,'landbouw zwerf'                ,'landbouw_zwerf'               , '204','255','204', '200', '200', '200',           '5',     '1',      '180',     'True',     '2'
-				 ,'bebouwd'                       ,'bebouwd'                      , '200',  '0',  '0', '100', '100', '100',           '1',     '0.05',    '45',     'True',     '1'
-				 ,'landbouw grootschalig'         ,'landbouw_grootschalig'        ,   '0','128',  '0', '200', '200', '200',          '10',     '0.05',   '200',     'True',     '2'
-				 ,'landbouw kleinschalig'         ,'landbouw_kleinschalig'        ,   '0','255',  '0', '200', '200', '200',          '20',     '0.05',   '240',     'True',     '2'
-				 ,'landbouw nat'                  ,'landbouw_nat'                 , '168','168','255', '200', '200', '200',          '20',     '0.05',   '240',     'True',     '2'
-				 ,'bos'                           ,'bos'                          ,  '40', '60',  '0', '140', '140', '140',          '40',     '2',      '260',     'True',     '3'
-				 ,'moeras & savanne bos'          ,'moeras_savanne_bos'           , '192','224','128', '140', '140', '140',         '100',     '2',      '300',     'True',     '3'
-				 ,'open gebied'                   ,'open_gebied'                  , '255','255','128', '255', '255', '255',           '4',     '0.4',    '180',     'True',     '4'
-				 ,'water'                         ,'water'                        ,   '0',  '0','255', '255', '255', '255',          '40',     '0.2',    '240',     'False',    '5'
-				 ,'buitenland'                    ,'buitenland'                   , '230','230','230', '255', '255', '255',       '99990',     '2',      '220',     'False',    '6'
-				];
-			}
-
-			attribute<string>       Label:          expr = "        Elements/Text[value(uint32(id(luModel)) * nrAttr + 0, elements)]", DialogType = "LabelText";
-			attribute<string>       Name:           expr = "        Elements/Text[value(uint32(id(luModel)) * nrAttr + 1, elements)]";
-			attribute<UInt32>       r:              expr = " uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 2, elements)])";
-			attribute<UInt32>       g:              expr = " uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 3, elements)])";
-			attribute<UInt32>       b:              expr = " uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 4, elements)])";
-			attribute<UInt32>       rgrey:          expr = " uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 5, elements)])";
-			attribute<UInt32>       ggrey:          expr = " uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 6, elements)])";
-			attribute<UInt32>       bgrey:          expr = " uint32(Elements/Text[value(uint32(id(luModel)) * nrAttr + 7, elements)])";
-			attribute<UInt32>       Color:          expr = "rgb(r,g,b)"            , DialogType = "BrushColor";
-			attribute<UInt32>       ColorGrey:      expr = "rgb(rgrey,ggrey,bgrey)", DialogType = "BrushColor";
-			attribute<dollar>       TravelCostOrg:  expr = "  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 8, elements)], dollar)";
-			attribute<impedance>    TravelCost:     expr = "  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 9, elements)], impedance)";
-			attribute<s>            TravelTime:     expr = "  value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 10, elements)], s)";
-			attribute<bool>         IsEndogenous:   expr = "   bool(Elements/Text[value(uint32(id(luModel)) * nrAttr + 11, elements)])";
-			attribute<Hoofdklassen> Hoofdklassennr: expr = "   value(Elements/Text[value(uint32(id(luModel)) * nrAttr + 12, elements)],Hoofdklassen)";
-
-			attribute<luModel> nr:            expr = "id(luModel)";
-			attribute<string>  id_str:        expr = "String(nr)";
-
-			parameter<.> overig:               [0];
-			parameter<.> landbouw_zwerf:       [1];
-			parameter<.> bebouwd:              [2];
-//			parameter<.> suburbaan:            [3];
-			parameter<.> landbouw_grootschalig:[3];
-			parameter<.> landbouw_kleinschalig:[4];
-			parameter<.> landbouw_nat:         [5];
-			parameter<.> bos:                  [6];
-			parameter<.> moeras_savanne_bos:   [7];
-			parameter<.> open_gebied:          [8];
-			parameter<.> water:                [9];
-			parameter<.> buitenland:           [10];
-		}
-		unit<uint8> HoofdKlassen: nrofrows = 7, KeepData = "True"
-		{
-			parameter<uint32> nrAttr: expr = "5", isHidden = "True";
-			unit<UInt32> elements: expr = "Range(uint32, 0, nrAttr*#HoofdKlassen)", isHidden = "True"
-			{
-				attribute<String> Text: [ // @USERINPUT
-				// label        , name         ,     r,    g,    b
-				  'overig'      ,'overig'      , '255','255','255'
-				 ,'bebouwd'     ,'bebouwd'     , '200',  '0',  '0'
-				 ,'landbouw'    ,'landbouw'    ,   '0','255',  '0'
-				 ,'bos'         ,'bos'         ,  '40', '60',  '0'
-				 ,'open gebied' ,'open_gebied' , '255','255','128'
-				 ,'water'       ,'water'       ,   '0',  '0','255'
-				 ,'buitenland'  ,'buitenland'  , '230','230','230'
-				];
-			}
-
-			attribute<string>  Label: expr = "        Elements/Text[value(uint32(id(.)) * nrAttr + 0, elements)]", DialogType = "LabelText";
-			attribute<string>  Name:  expr = "        Elements/Text[value(uint32(id(.)) * nrAttr + 1, elements)]";
-			attribute<UInt32>  r:     expr = " uint32(Elements/Text[value(uint32(id(.)) * nrAttr + 2, elements)])";
-			attribute<UInt32>  g:     expr = " uint32(Elements/Text[value(uint32(id(.)) * nrAttr + 3, elements)])";
-			attribute<UInt32>  b:     expr = " uint32(Elements/Text[value(uint32(id(.)) * nrAttr + 4, elements)])";
-			attribute<UInt32>  Color: expr = "rgb(r,g,b)"            , DialogType = "BrushColor";
-		}
-		unit<uint8> luEndogenous: expr = "Subset(luModel/IsEndogenous)"
-		{
-			attribute<string> Name:   expr = "luModel/Name[nr_OrgEntity]";
-			attribute<string> Label:  expr = "Name",                        DialogType = "LabelText";
-			attribute<uint32> Color:  expr = "luModel/Color[nr_OrgEntity]", DialogType = "BrushColor";
-			attribute<.>      nr:     expr = "id(.)";
-			attribute<string> id_str: expr = "String(nr)";
-		}
-		unit<uint8> luExogenous: expr = "Subset(!luModel/IsEndogenous)"
-		{
-			attribute<string> Name:   expr = "luModel/Name[nr_OrgEntity]";
-			attribute<string> Label:  expr = "Name",                        DialogType = "LabelText";
-			attribute<uint32> Color:  expr = "luModel/Color[nr_OrgEntity]", DialogType = "BrushColor";
-			attribute<.>      nr:     expr = "id(.)";
-			attribute<string> id_str: expr = "String(nr)";
-		}
 	}
 	unit<uint8> materialtype: nrofrows = 15
 	{

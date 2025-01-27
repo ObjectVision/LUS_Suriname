@@ -17,12 +17,12 @@ container Templates : isHidden = "True", Using = "Geography;Classifications"
 		// end case parameters
 
 		attribute<ratio> MinAllocFactor (LU/luEndogenous): expr =
-			"(LU/luEndogenous/Name == 'bos' || LU/luEndogenous/Name == 'moeras_savanne_bos')"
+			"(LU/luEndogenous/Name == 'forest' || LU/luEndogenous/Name == 'swamp_savanna_forest')"
 				"? value(0.95, ratio)"
 				": value(1.00, ratio)";
 
 		attribute<ratio> MaxAllocFactor (LU/luEndogenous): expr =
-			"(LU/luEndogenous/Name == 'bos' || LU/luEndogenous/Name == 'moeras_savanne_bos')"
+			"(LU/luEndogenous/Name == 'forest' || LU/luEndogenous/Name == 'swamp_savanna_forest')"
 				"? value(1.05, ratio)"
 				": value(1.00, ratio)";
 

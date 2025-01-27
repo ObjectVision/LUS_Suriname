@@ -11,94 +11,86 @@
 container Geography: Using = "Units", IsHidden = "True"
 {
 	// Projectie: WGS 84 / UTM zone 21N
-	unit<fpoint> SurinameCoord: DialogData = "Present/Reference/admin_regions/geometry";//Present/Reference/Countrygeometry/polygon/geometry";
-	unit<spoint> Suriname250mGridSrc:expr  = 
-		"range("
-			"gridset("
-				" SurinameCoord"
-				",point("
-					" float32( 250.0)"
-					",float32(-250.0)"
-					",SurinameCoord"
-				" )"
-				",point("
-					" float32(306275.0)"
-					",float32(13900.0) + float32(250.0) * float32(3169.0)"
-					",SurinameCoord"
-				" )"
-				",spoint"
-			")"
-			",point("
-				" Int16(0)"
-				",Int16(0)"
-			" )"
-			",point("
-				"  Int16(2241)"
-				", Int16(3169)"
-			")"
-		")"
+	unit<fpoint> SurinameCoord : DialogData = "Present/Reference/admin_regions/geometry";//Present/Reference/Countrygeometry/polygon/geometry";
+	parameter<m> Gridsize := 250[m];
+	
+	unit<spoint> Suriname250mGridSrc := 
+		range(
+			gridset(
+				 SurinameCoord
+				,point(
+					 Gridsize
+					,-Gridsize
+					,SurinameCoord
+				 )
+				,point(
+					 float32(306275.0)
+					,float32(13900.0) + float32(250.0) * float32(3169.0)
+					,SurinameCoord
+				 )
+				,spoint
+			)
+			,point(
+				 Int16(0)
+				,Int16(0)
+			 )
+			,point(
+				  Int16(2241)
+				, Int16(3169)
+			)
+		)
 	{
-		parameter<fpoint> ProjFactor: expr = "fpoint(GetProjectionFactor(.))";
-		parameter<fpoint> ProjOffset: expr = "fpoint(GetProjectionOffset(.))";
-		attribute<fpoint> id:         expr = "fpoint(id(.)) *  ProjFactor + ProjOffset";
+		parameter<fpoint> ProjFactor := fpoint(GetProjectionFactor(.));
+		parameter<fpoint> ProjOffset := fpoint(GetProjectionOffset(.));
+		attribute<fpoint> id:          = fpoint(id(.)) *  ProjFactor + ProjOffset;
 
-		attribute<fpoint> P:          expr = "(fpoint(id(.)) + point(Float32(0.5), Float32(0.5))) * ProjFactor + ProjOffset";
+		attribute<fpoint> P:           = (fpoint(id(.)) + point(Float32(0.5), Float32(0.5))) * ProjFactor + ProjOffset;
 
-		attribute<int16>  Row:        expr = "PointRow(id(.))";
-		attribute<int16>  Col:        expr = "PointCol(id(.))";
+		attribute<int16>  Row:         = PointRow(id(.));
+		attribute<int16>  Col:         = PointCol(id(.));
 
-		attribute<uint32> NrCells:    expr = "const(1, ., uint32)";
+		attribute<uint32> NrCells:     = const(1, ., uint32);
 	}
-	unit<spoint> Suriname250mGrid: expr =
-		"range("
-			"gridset("
-				" SurinameCoord"
-				",point("
-					" float32(250.0)"
-					",float32(-250.0)"
-					",SurinameCoord"
-				" )"
-				",point("
-					" float32(340025)"
-					",float32(159900) + float32(250.0) * float32(2025)"
-					",SurinameCoord"
-				")"
-				", spoint"
-			")"
-			",point("
-				" Int16(0)"
-				",Int16(0)"
-			")"
-			",point("
-				" Int16(1990)"
-				",Int16(2025)"
-			")"
-		")"
+	unit<spoint> Suriname250mGrid :=
+		range(
+			gridset(
+				 SurinameCoord
+				,point(
+					 float32(250.0)
+					,float32(-250.0)
+					,SurinameCoord)
+				,point(
+					 float32(340025)
+					,float32(159900) + float32(250.0) * float32(2025)
+					,SurinameCoord)
+				, spoint
+			)
+			,point(Int16(0),Int16(0))
+			,point(Int16(1990),Int16(2025)
+			)
+		)
 	{
-		parameter<fpoint>        ProjFactor: expr = "fpoint(GetProjectionFactor(.))";
-		parameter<fpoint>        ProjOffset: expr = "fpoint(GetProjectionOffset(.))";
-		attribute<fpoint>        id:         expr = "fpoint(id(.)) * ProjFactor + ProjOffset";
+		parameter<fpoint>        ProjFactor := fpoint(GetProjectionFactor(.));
+		parameter<fpoint>        ProjOffset := fpoint(GetProjectionOffset(.));
+		attribute<fpoint>        id:= fpoint(id(.)) * ProjFactor + ProjOffset;
 
-		attribute<SurinameCoord> P:          expr = "(fpoint(id(.)) + point(Float32(0.5), Float32(0.5))) * ProjFactor + ProjOffset";
-		attribute<bool>          isSuriname: expr = "isDefined(poly2grid(Present/Reference/admin_regions_detail/geometry,.))";
+		attribute<SurinameCoord> geometry := (fpoint(id(.)) + point(Float32(0.5), Float32(0.5))) * ProjFactor + ProjOffset;
+		attribute<bool>          isSuriname := isDefined(poly2grid(Present/Reference/admin_regions_detail/geometry,.));
 
-		attribute<int16>         Row:        expr = "PointRow(id(.))";
-		attribute<int16>         Col:        expr = "PointCol(id(.))";
+		attribute<int16>         Row:= PointRow(id(.));
+		attribute<int16>         Col:= PointCol(id(.));
 
-		attribute<uint32>        NrCells:    expr = "const(1, ., uint32)";
-		attribute<spoint>        GridSrcNr:  expr = "rlookup(id, Suriname250mGridSrc/id)";
+		attribute<uint32>        NrCells:= const(1, ., uint32);
+		attribute<spoint>        GridSrcNr:= rlookup(id, Suriname250mGridSrc/id);
 
-		attribute<Present/Reference/admin_regions> regionnr: expr = "poly2grid(Present/Reference/admin_regions/geometry,.)";
+		attribute<Present/Reference/admin_regions> regionnr := poly2grid(Present/Reference/admin_regions/geometry,.);
 	}
 
-	unit<uint32> Suriname250mPointSet: 
-		expr       = "Subset(isDefined(Suriname250mGrid/P))",
-		DialogType = "Map",
-		DialogData = "P"
+	unit<uint32> Suriname250mPointSet:= select_with_org_rel(isDefined(Suriname250mGrid/geometry))
 	{
-		attribute<SurinameCoord> P:   expr = "Suriname250mGrid/P[nr_OrgEntity]";
-		attribute<int16>         Row: expr = "Suriname250mGrid/Row[nr_OrgEntity]";
-		attribute<int16>         Col: expr = "Suriname250mGrid/Col[nr_OrgEntity]";
+		attribute<SurinameCoord> geometry := Suriname250mGrid/geometry[org_rel];
+		attribute<int16>         Row := Suriname250mGrid/Row[org_rel];
+		attribute<int16>         Col := Suriname250mGrid/Col[org_rel];
 	}
 
 	// Distmatrices, used for potential analyses
@@ -106,15 +98,15 @@ container Geography: Using = "Units", IsHidden = "True"
 
 	container DistMatrices
 	{
-		unit<spoint> p250m:   expr = "Template(value(250, m), value(  250, m), True)";
-		unit<spoint> p500m:   expr = "Template(value(250, m), value(  500, m), True)";
-		unit<spoint> p1000m:  expr = "Template(value(250, m), value( 1000, m), True)";
-		unit<spoint> p2500m:  expr = "Template(value(250, m), value( 2500, m), True)";
-		unit<spoint> p5000m:  expr = "Template(value(250, m), value( 5000, m), True)";
-		unit<spoint> p10000m: expr = "Template(value(250, m), value(10000, m), True)";
-		unit<spoint> p20000m: expr = "Template(value(250, m), value(20000, m), True)";
+		unit<spoint> p250m   := Make_Matrices_T(Gridsize, value(  250, m), True);
+		unit<spoint> p500m   := Make_Matrices_T(Gridsize, value(  500, m), True);
+		unit<spoint> p1000m  := Make_Matrices_T(Gridsize, value( 1000, m), True);
+		unit<spoint> p2500m  := Make_Matrices_T(Gridsize, value( 2500, m), True);
+		unit<spoint> p5000m  := Make_Matrices_T(Gridsize, value( 5000, m), True);
+		unit<spoint> p10000m := Make_Matrices_T(Gridsize, value(10000, m), True);
+		unit<spoint> p20000m := Make_Matrices_T(Gridsize, value(20000, m), True);
 
-		container Template: isTemplate = "true"
+		Template Make_Matrices_T
 		{
 			// begin case parameters
 			parameter<m>    gridsize;
@@ -122,42 +114,42 @@ container Geography: Using = "Units", IsHidden = "True"
 			parameter<bool> zero_for_pivot_cell;
 			// end case parameters
 
-			parameter<float32> radius:   expr = "radius_max / gridsize";
-			unit<spoint>       tmpRange: expr = "range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + int16(1), int16(radius) + int16(1)))";
-			unit<spoint>       potRange: expr = "tmpRange"
+			parameter<float32> radius   := radius_max / gridsize;
+			unit<spoint>       tmpRange := range(spoint, point(-int16(radius), -int16(radius)), point(int16(radius) + int16(1), int16(radius) + int16(1)));
+			unit<spoint>       potRange := tmpRange
 			{
-				attribute<float32>    isCenterCell  : expr = "float32(pointRow(id(potRange))) = float32(0) && float32(pointCol(id(potRange))) = float32(0) ? float32(0) : float32(1)";
-				attribute<Dist2Range> distMatr      : expr = "dist2(point(Int16(0), Int16(0), tmpRange), Dist2Range)";
-				attribute<float32>    AbsWeight     : expr = "distMatr <= Uint32(radius * radius) ? Float32(1.0) / (Float32(distMatr) + float32(0.08)) : Float32(0.0)";
-				attribute<float32>    AbsWeightCorr : expr = "AbsWeight * isCenterCell";
-				attribute<float32>    RelWeightSqrt : expr = "zero_for_pivot_cell ? scalesum(Sqrt(AbsWeightCorr), Float32( 1.0) ) : scalesum(Sqrt(AbsWeight), Float32( 1.0) )";
-				attribute<float32>    WeightEqual   : expr = "RelWeightSqrt > float32(0) ? float32(1) : float32(0)";
-				attribute<float32>    RelWeightEqual: expr = "WeightEqual / sum(WeightEqual)";
-				attribute<float32>    Const1        : expr = "const(1,.,float32)";
+				attribute<float32>    isCenterCell   := float32(pointRow(id(potRange))) = float32(0) && float32(pointCol(id(potRange))) = float32(0) ? float32(0) : float32(1);
+				attribute<Dist2Range> distMatr       := dist2(point(Int16(0), Int16(0), tmpRange), Dist2Range);
+				attribute<float32>    AbsWeight      := distMatr <= Uint32(radius * radius) ? Float32(1.0) / (Float32(distMatr) + float32(0.08)) : Float32(0.0);
+				attribute<float32>    AbsWeightCorr  := AbsWeight * isCenterCell;
+				attribute<float32>    RelWeightSqrt  := zero_for_pivot_cell ? scalesum(Sqrt(AbsWeightCorr), Float32( 1.0) ) : scalesum(Sqrt(AbsWeight), Float32( 1.0) );
+				attribute<float32>    WeightEqual    := RelWeightSqrt > float32(0) ? float32(1) : float32(0);
+				attribute<float32>    RelWeightEqual := WeightEqual / sum(WeightEqual);
+				attribute<float32>    Const1         := const(1,.,float32);
 			}
 		}
 	}
 	container Regions // Hiermee wordt ingesteld voor welke regio's claims beschikbaar zijn, voor deze configuratie op niveua van heel suriname
 	{
-		unit<UInt8> ClaimUnit: Range = "[0, 1)";
+		unit<UInt8> ClaimUnit : nrofrows = 1;
 
 		container Grids
 		{
-			attribute<ClaimUnit> Data (Geography/Suriname250mGrid): expr = 
-				"Geography/Suriname250mGrid/isSuriname"
-					"? value(0    , ClaimUnit)"
-					": value(0 / 0, ClaimUnit)";
+			attribute<ClaimUnit> Data (Geography/Suriname250mGrid) := 
+				Geography/Suriname250mGrid/isSuriname
+					? value(0    , ClaimUnit)
+					: value(0 / 0, ClaimUnit);
 		}
-		attribute<string> Refs(Classifications/LU/luEndogenous): expr = "const('Data', Classifications/LU/luEndogenous)";
+		attribute<string> Refs (Classifications/LU/luEndogenous) := const('Data', Classifications/LU/luEndogenous);
 
-		unit<UInt8> UniqueRefs: expr = "unique(Refs)"
+		unit<UInt8> UniqueRefs := unique(Refs)
 		{
 			attribute<string> Values(.);
 		}
-		unit<UInt16> Atomair: expr = "Range(ClaimUnit, uint16(0), uint16(nrOfRows(ClaimUnit)))"
+		unit<UInt16> Atomair := Range(ClaimUnit, uint16(0), uint16(#ClaimUnit))
 		{
-			attribute<Atomair>   UnionData(Geography/Suriname250mGrid): expr = "value(Grids/Data, Atomair)";
-			attribute<ClaimUnit> Data(.):                               expr = "const(0, ., ClaimUnit)";
+			attribute<.>         UnionData (Geography/Suriname250mGrid) := value(Grids/Data, Atomair);
+			attribute<ClaimUnit> Data                                  := const(0, ., ClaimUnit);
 		}
 	}
 }

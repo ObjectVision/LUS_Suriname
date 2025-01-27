@@ -28,10 +28,10 @@ container ScenarioComponents: Using = "Units;Geography;Classifications"
 
 				parameter<ratio>          ToenameFootPrintPerjaar:            expr = "value(0.04, ratio)",  Source = "Expert Knowledge"; // Geeft aan hoeveel meer hectare per jaar een inwoner gaat gebruiken
 
-				parameter<ratio>          IntensiveringLandbouw_grootschalig: expr = "value(0.12, ratio)",  Source = "Expert Knowledge"; // Geeft aan hoeveel de landbouw gaat intensiveren in de jaren tot   2020
+				parameter<ratio>          Intensiveringagricultural_large_scale: expr = "value(0.12, ratio)",  Source = "Expert Knowledge"; // Geeft aan hoeveel de landbouw gaat intensiveren in de jaren tot   2020
 
-				parameter<luHa>           AfnameLandbouw_zwerf:               expr = "value(100000, luHa)", Source = "Expert Knowledge"; // Geeft aan hoeveel hectare zwerf landbouw zal gaan verdwijnen
-				parameter<luHa>           AfnameMoeras_savanne_bos:           expr = "value(100000, luHa)", Source = "Expert Knowledge"; // Geeft aan hoeveel hectare moeras zal gaan verdwijnen
+				parameter<luHa>           Afnameagricultural_scattered:               expr = "value(100000, luHa)", Source = "Expert Knowledge"; // Geeft aan hoeveel hectare zwerf landbouw zal gaan verdwijnen
+				parameter<luHa>           Afnameswamp_savanna_forest:           expr = "value(100000, luHa)", Source = "Expert Knowledge"; // Geeft aan hoeveel hectare moeras zal gaan verdwijnen
 
 				parameter<m>              HoutkapPerMeterWeg:                 expr = "value(0,    m)", Source = "Expert Knowledge"; // Geeft aan hoeveel hectare gekapt gaat worden voor de nieuwe weg, niet in dit scenario 
 				parameter<luHa>           HoutkapVoorMining:                  expr = "value(0, luHa)", Source = "Expert Knowledge"; // Geeft aan hoeveel hectare gekapt gaat worden voor mining, niet in dit scenario 
@@ -62,15 +62,15 @@ container ScenarioComponents: Using = "Units;Geography;Classifications"
 				{
 					attribute<luHa> landuse (Classifications/LU/luEndogenous): expr = "float32(pcount(/Present/landuse/endogenous)) * value(2.5 * 2.5, luHa)";
 					
-					parameter<luHa_per_inh> ha_bebouwd_per_inhabitant:               expr = "bebouwd               / ParamSet/Inwoners2010";
-					parameter<luHa_per_inh> ha_landbouw_grootschalig_per_inhabitant: expr = "landbouw_grootschalig / ParamSet/Inwoners2010";
-					parameter<luHa_per_inh> ha_landbouw_kleinschalig_per_inhabitant: expr = "landbouw_kleinschalig / ParamSet/Inwoners2010";
-					parameter<luHa_per_inh> ha_landbouw_nat_per_inhabitant:          expr = "landbouw_nat          / ParamSet/Inwoners2010";
+					parameter<luHa_per_inh> ha_builtup_per_inhabitant:               expr = "builtup               / ParamSet/Inwoners2010";
+					parameter<luHa_per_inh> ha_agricultural_large_scale_per_inhabitant: expr = "agricultural_large_scale / ParamSet/Inwoners2010";
+					parameter<luHa_per_inh> ha_agricultural_small_scale_per_inhabitant: expr = "agricultural_small_scale / ParamSet/Inwoners2010";
+					parameter<luHa_per_inh> ha_agricultural_wet_per_inhabitant:          expr = "agricultural_wet          / ParamSet/Inwoners2010";
 				}
 				Container GrowthRates
 				{
-					parameter<ratio> bebouwd:               expr = "(float32(1) + ParamSet/ToenameFootPrintPerjaar) ^ float32(ParamSet/PeriodLength)";
-					parameter<ratio> landbouw_grootschalig: expr = "(float32(1) + ParamSet/IntensiveringLandbouw_grootschalig) ^ float32(ParamSet/PeriodLength)";
+					parameter<ratio> builtup:               expr = "(float32(1) + ParamSet/ToenameFootPrintPerjaar) ^ float32(ParamSet/PeriodLength)";
+					parameter<ratio> agricultural_large_scale: expr = "(float32(1) + ParamSet/Intensiveringagricultural_large_scale) ^ float32(ParamSet/PeriodLength)";
 				}
 				Container ProposedRoad // Voor het modelleren van de kap van wegen voor de nieuwe infrastructuur
 				{
@@ -78,16 +78,16 @@ container ScenarioComponents: Using = "Units;Geography;Classifications"
 					parameter<luHa> openarea: expr = "(ParamSet/HoutkapPerMeterWeg * length) / value(10000, m2 / luHa)";
 					
 				}
-				parameter<luHa> landbouw_zwerf:        expr = " Present/landbouw_zwerf - ParamSet/AfnameLandbouw_zwerf";
-				parameter<luHa> bebouwd:               expr = "(ParamSet/Inwoners2025 * Present/ha_bebouwd_per_inhabitant)  * GrowthRates/bebouwd";
-				parameter<luHa> landbouw_grootschalig: expr = "(ParamSet/Inwoners2025 * Present/ha_landbouw_grootschalig_per_inhabitant)  * GrowthRates/landbouw_grootschalig";
-				parameter<luHa> landbouw_kleinschalig: expr = " ParamSet/Inwoners2025 * Present/ha_landbouw_kleinschalig_per_inhabitant";
-				parameter<luHa> landbouw_nat:          expr = " ParamSet/Inwoners2025 * Present/ha_landbouw_nat_per_inhabitant";
-				parameter<luHa> bos:                   expr = 
-					"sum(Present/LandUse) - (landbouw_zwerf + bebouwd + landbouw_grootschalig + landbouw_kleinschalig + landbouw_nat + moeras_savanne_bos  + open_gebied)";
-					// De claim voor bos is een restcategorie, wat er over is aan landuse dat niet geclaimd wordt door de andere typen blijft bos
-				parameter<luHa> moeras_savanne_bos:    expr = " Present/moeras_savanne_bos - ParamSet/AfnameMoeras_savanne_bos";
-				parameter<luHa> open_gebied:           expr = " Present/open_gebied + ProposedRoad/openarea +  ParamSet/HoutkapVoorMining";
+				parameter<luHa> agricultural_scattered:        expr = " Present/agricultural_scattered - ParamSet/Afnameagricultural_scattered";
+				parameter<luHa> builtup:               expr = "(ParamSet/Inwoners2025 * Present/ha_builtup_per_inhabitant)  * GrowthRates/builtup";
+				parameter<luHa> agricultural_large_scale: expr = "(ParamSet/Inwoners2025 * Present/ha_agricultural_large_scale_per_inhabitant)  * GrowthRates/agricultural_large_scale";
+				parameter<luHa> agricultural_small_scale: expr = " ParamSet/Inwoners2025 * Present/ha_agricultural_small_scale_per_inhabitant";
+				parameter<luHa> agricultural_wet:          expr = " ParamSet/Inwoners2025 * Present/ha_agricultural_wet_per_inhabitant";
+				parameter<luHa> forest:                   expr = 
+					"sum(Present/LandUse) - (agricultural_scattered + builtup + agricultural_large_scale + agricultural_small_scale + agricultural_wet + swamp_savanna_forest  + open_area)";
+					// De claim voor forest is een restcategorie, wat er over is aan landuse dat niet geclaimd wordt door de andere typen blijft forest
+				parameter<luHa> swamp_savanna_forest:    expr = " Present/swamp_savanna_forest - ParamSet/Afnameswamp_savanna_forest";
+				parameter<luHa> open_area:           expr = " Present/open_area + ProposedRoad/openarea +  ParamSet/HoutkapVoorMining";
 			}
 			attribute<luHa> ClaimHa (Classifications/LU/luEndogenous):
 				expr = "='union_data(Classifications/LU/luEndogenous,' + AsList('CaseData/' + Classifications/LU/luEndogenous/name,',') +')'";

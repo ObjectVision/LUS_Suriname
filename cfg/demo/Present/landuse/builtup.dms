@@ -4,11 +4,11 @@
 //**                                                                                                                                                                                          **
 //**********************************************************************************************************************************************************************************************
 //**                                                                                                                                                                                          **
-//**                                                  The configuration of the bebouwd land use class based on the OSM data                                                                   **
+//**                                                  The configuration of the builtup land use class based on the OSM data                                                                   **
 //**                                                                                                                                                                                          **
 //**********************************************************************************************************************************************************************************************
 
-container Bebouwd
+container builtup
 {
 	unit<uint32> segments: expr = "arc2segm(Accessibility/preperation/road/OSM/line)"
 	{
@@ -50,9 +50,9 @@ container Bebouwd
 	attribute<float32> PotRoadPoints250m (Geography/Suriname250mGrid): expr = "potential(float32(NrRoadPoints), Geography/DistMatrices/p250m/potRange/Const1)";
 	attribute<float32> PotRoadPoints500m (Geography/Suriname250mGrid): expr = "potential(float32(NrRoadPoints), Geography/DistMatrices/p500m/potRange/Const1)";
 
-	attribute<bool>    IsBebouwd250m     (Geography/Suriname250mGrid): expr = "PotRoadPoints250m >= float32( 750) || NrRoadPoints >= 300";
-	attribute<bool>    IsBebouwd500m     (Geography/Suriname250mGrid): expr = "PotRoadPoints500m >= float32(1800) || NrRoadPoints >= 300";
+	attribute<bool>    Isbuiltup250m     (Geography/Suriname250mGrid): expr = "PotRoadPoints250m >= float32( 750) || NrRoadPoints >= 300";
+	attribute<bool>    Isbuiltup500m     (Geography/Suriname250mGrid): expr = "PotRoadPoints500m >= float32(1800) || NrRoadPoints >= 300";
 
-	attribute<bool>    IsLintBebouwd250m (Geography/Suriname250mGrid): expr = "!IsBebouwd250m && (PotRoadPoints250m >= float32( 500) || NrRoadPoints >= 150)";
-	attribute<bool>    IsLintBebouwd500m (Geography/Suriname250mGrid): expr = "!IsBebouwd500m && (PotRoadPoints500m >= float32(1300) || NrRoadPoints >= 150)";
+	attribute<bool>    IsLintbuiltup250m (Geography/Suriname250mGrid): expr = "!Isbuiltup250m && (PotRoadPoints250m >= float32( 500) || NrRoadPoints >= 150)";
+	attribute<bool>    IsLintbuiltup500m (Geography/Suriname250mGrid): expr = "!Isbuiltup500m && (PotRoadPoints500m >= float32(1300) || NrRoadPoints >= 150)";
 }

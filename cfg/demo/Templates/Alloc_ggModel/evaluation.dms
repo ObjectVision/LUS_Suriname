@@ -15,19 +15,15 @@
 
 container evaluation
 {
-	container CurrentLanduseTotaal
-	:	Descr = "Total current landuse"
-	,	isHidden = "True"
-	,	Expr =
-			"for_each_nedv("
-				" Classifications/LU/luEndogenous/label"
-				",'sum(Present/LandUse/model == value(' + Classifications/LU/luEndogenous/id_str + ',Classifications/LU/luEndogenous)"
-					"? value(6.25, luHa)"
-					": value(0, luHa)"
-				")'"
-				",void"
-				",luHa"
-			")";
+	container CurrentLanduseTotaal :=
+			for_each_nedv(
+				 Classifications/LU/luEndogenous/label
+				,'sum(Present/LandUse/model == '+Classifications/LU/luEndogenous/org_rel+'
+					? 6.25[luHa]
+					: 0[luHa])'
+				,void
+				,luHa
+			),	Descr = "Total current landuse",	isHidden = "True";
 
 	container AllocatedLandUseTotaal
 	:	Descr = "Total allocated landuse"
